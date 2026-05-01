@@ -1,0 +1,23 @@
+version: '3.8'
+
+services:
+  pgvector:
+    image: pgvector/pgvector:pg16
+    container_name: doc-assistant-db
+    environment:
+      POSTGRES_USER: docassistant
+      POSTGRES_PASSWORD: docassistant123
+      POSTGRES_DB: docassistant
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgvector_data:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U docassistant"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  pgvector_data:
